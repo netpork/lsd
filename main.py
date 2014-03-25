@@ -8,3 +8,6 @@ display = Display()
 lcd = display.lcd
 
 lcd.message("shmorni\nshmorni")
+
+#
+#
