@@ -7,4 +7,4 @@ from display import Display
 display = Display()
 lcd = display.lcd
 
-lcd.message("smorni\nsmorniii")
+lcd.message("shmorni\nshmorni")
