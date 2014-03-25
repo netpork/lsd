@@ -1,4 +1,4 @@
 lsd
 ===
 
-raspberry pi adafruit lcd
+rpi adafruit lcd
