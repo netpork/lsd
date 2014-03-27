@@ -11,6 +11,7 @@ class Display:
     info = None
     screen = []
     screenIdx = 0
+    systemHalt = False
 
     def __init__(self):
         self.lcd.clear()
@@ -39,7 +40,7 @@ class Display:
             self.setBackgroundRed()
             self.info.noData()
 
-        self.show()
+        if not self.systemHalt: self.show()
 
     def moveUp(self):
         if self.screenIdx == 0:
@@ -70,6 +71,7 @@ class Display:
 
     def action2(self):
         """ reboot """
+        self.systemHalt = True
         subprocess.call("sync")
         subprocess.call("reboot")
         self.lcd.clear()
@@ -77,6 +79,7 @@ class Display:
 
     def action3(self):
         """ shutdown """
+        self.systemHalt = True
         subprocess.call("sync")
         subprocess.call(["halt", "-h"])
         self.lcd.clear()
