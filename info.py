@@ -15,8 +15,8 @@ class Info:
     statusCmd = "femon -c 1 | grep FE_HAS_LOCK"
     statusData = None
 
-    signalTotal = 21813
-    signalBase = 32768
+    signalTotal = 65535 - 22000
+    signalBase = 22000
 
     def __init__(self):
         self.getStatus()
@@ -49,7 +49,7 @@ class Info:
 
     def calculateSignal(self, signalHex):
         decimalGiven = int(signalHex, 16) - self.signalBase
-        if decimalGiven <= self.signalBase:
+        if decimalGiven < 0:
             return '0'
         signal = (float(decimalGiven) / float(self.signalTotal)) * 100
         return str(int(math.ceil(signal)))
