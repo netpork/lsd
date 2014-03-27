@@ -29,12 +29,18 @@ class Display:
         self.lcd.message(s) 
 
     def update(self):
-        self.lcd.clear()
-        self.screenIdx += 1
-        if self.screenIdx % 2:
+        lock = self.info.isLocked()
+
+        # appropriately set backlight
+        if lock:
             self.setBackgroundGreen()
+            self.info.fillData()
         else:
             self.setBackgroundRed()
+            self.info.noData()
+
+        self.show()
+
 
     def moveUp(self):
         if self.screenIdx == 0:

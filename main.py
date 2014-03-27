@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # pylint: disable-msg=C0103
-import sys, time
+import time, sys
 sys.path.append("Adafruit-Raspberry-Pi-Python-Code/Adafruit_CharLCDPlate")
 # from Adafruit_CharLCDPlate import Adafruit_CharLCDPlate
 from display import Display 
@@ -11,8 +11,8 @@ prevButton = -1
 lastTime = time.time()
 REFRESH_TIME = 3.0
 
+# show first page
 display.show()
-
 
 while True:
     button = lcd.buttons()
@@ -33,5 +33,5 @@ while True:
         since = now - lastTime
 
         if since > REFRESH_TIME or since < 0.0:
-            # display.update()
+            display.update()
             lastTime = now
