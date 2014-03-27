@@ -42,13 +42,15 @@ class Info:
         self.screen1[1] = data[4]
 
     def noData(self):
-        self.screen0[0] = 'signal 0'
+        self.screen0[0] = 'signal 0%'
         self.screen0[1] = 'snr 0'
         self.screen1[0] = 'ber 00000000'
         self.screen1[1] = 'unc 00000000'
 
     def calculateSignal(self, signalHex):
         decimalGiven = int(signalHex, 16) - self.signalBase
+        if decimalGiven <= self.signalBase:
+            return '0'
         signal = (float(decimalGiven) / float(self.signalTotal)) * 100
         return str(int(math.ceil(signal)))
 
