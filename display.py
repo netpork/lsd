@@ -41,7 +41,6 @@ class Display:
 
         self.show()
 
-
     def moveUp(self):
         if self.screenIdx == 0:
             self.screenIdx = self.info.numPages

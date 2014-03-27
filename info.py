@@ -1,4 +1,5 @@
 #!/usr/bin/python
+import math
 from subprocess import *
 
 class Info:
@@ -14,8 +15,11 @@ class Info:
     statusCmd = "femon -c 1 | grep FE_HAS_LOCK"
     statusData = None
 
+    signalTotal = 21813
+    signalBase = 32768
+
     def __init__(self):
-        pass
+        self.getStatus()
     
     def isLocked(self):
         self.getStatus()
@@ -30,7 +34,9 @@ class Info:
 
     def fillData(self):
         data = self.statusData.split(' | ')
-        self.screen0[0] = data[1]
+        signal = self.calculateSignal(data[1][-4:])
+
+        self.screen0[0] = 'signal ' + signal + '%'
         self.screen0[1] = data[2]
         self.screen1[0] = data[3]
         self.screen1[1] = data[4]
@@ -40,6 +46,11 @@ class Info:
         self.screen0[1] = 'snr 0'
         self.screen1[0] = 'ber 00000000'
         self.screen1[1] = 'unc 00000000'
+
+    def calculateSignal(self, signalHex):
+        decimalGiven = int(signalHex, 16) - self.signalBase
+        signal = (float(decimalGiven) / float(self.signalTotal)) * 100
+        return str(int(math.ceil(signal)))
 
     def runCmd(self, cmd):
         p = Popen(cmd, shell=True, stdout=PIPE, stderr=STDOUT)
