@@ -24,6 +24,7 @@ class Display:
         elif self.screenIdx == 2: self.screen = self.info.screen2
         elif self.screenIdx == 3: self.screen = self.info.screen3
         elif self.screenIdx == 4: self.screen = self.info.screen4
+        elif self.screenIdx == 5: self.screen = self.info.screen5
 
         s = self.screen[0] + '\n' + self.screen[1]
         self.lcd.clear()
@@ -60,6 +61,7 @@ class Display:
         elif self.screenIdx == 2: self.action2() 
         elif self.screenIdx == 3: self.action3() 
         elif self.screenIdx == 4: self.action4() 
+        elif self.screenIdx == 5: self.action5() 
 
     def action0(self):
         """ action for page 1 """
@@ -70,6 +72,9 @@ class Display:
         pass
 
     def action2(self):
+        pass
+        
+    def action3(self):
         """ reboot """
         self.systemHalt = True
         subprocess.call("sync")
@@ -77,7 +82,7 @@ class Display:
         self.lcd.clear()
         self.lcd.message('Rebooting ...')
 
-    def action3(self):
+    def action4(self):
         """ shutdown """
         self.systemHalt = True
         subprocess.call("sync")
@@ -85,7 +90,7 @@ class Display:
         self.lcd.clear()
         self.lcd.message('Wait 30 secs\nto unplug...')
 
-    def action4(self):
+    def action5(self):
         self.exit()
 
     def exit(self):
