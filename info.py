@@ -4,7 +4,7 @@ from subprocess import *
 
 class Info:
 
-    screen0 = ['---', '---']
+    screen0 = ['shmorni!', 'mmm...']
     screen1 = ['---', '---']
     screen2 = ['---', '---']
     screen3 = ['>Restart', '']

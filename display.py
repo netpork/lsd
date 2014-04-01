@@ -72,8 +72,9 @@ class Display:
         pass
 
     def action2(self):
+        """ action for page 3 """
         pass
-        
+
     def action3(self):
         """ reboot """
         self.systemHalt = True
@@ -81,14 +82,16 @@ class Display:
         subprocess.call("reboot")
         self.lcd.clear()
         self.lcd.message('Rebooting ...')
+        exit(0)
 
     def action4(self):
         """ shutdown """
         self.systemHalt = True
         subprocess.call("sync")
-        subprocess.call(["halt", "-h"])
+        subprocess.call(["shutdown", "-h", "now"])
         self.lcd.clear()
-        self.lcd.message('Wait 30 secs\nto unplug...')
+        self.lcd.message("Wait untill\nscreen is off!")
+        exit(0)
 
     def action5(self):
         self.exit()
