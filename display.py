@@ -93,7 +93,7 @@ class Display:
         self.systemHalt = True
         self.setBackgroundOff()
         self.lcd.clear()
-        self.lcd.message("Wait till screen\nis off + 10secs!")
+        self.lcd.message("Wait till screen\nis off + 15secs!")
         subprocess.call("sync")
         subprocess.call(["shutdown", "-h", "now"])
         # exit(0)
@@ -103,7 +103,7 @@ class Display:
 
     def exit(self):
         self.setLcdOff()
-        exit()
+        exit(0)
 
     def setBackgroundGreen(self):
         self.lcd.backlight(self.lcd.GREEN)

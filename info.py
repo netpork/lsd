@@ -4,7 +4,7 @@ import math
 from subprocess import *
 
 class Info:
-    screen0 = ['    Shmorni     ', '     v0.42      ']
+    screen0 = ['    Shmarni     ', '     v0.42      ']
     screen1 = ['---', '---']
     screen2 = ['---', '---']
     screen3 = ['>Reboot', '']
