@@ -1,0 +1,123 @@
+sudo scan /usr/share/dvb/dvb-t/sl-Slovenia | tee channels-slo.conf
+
+tzap -c channels-slo.conf -rp "MMC1"
+
+dvbsnoop -b -n 200000 -s ts 0x12b > ts_file6.pid0x12b.bin 
+
+ts2sec ts_file6.pid0x12b.bin 299 > output.sec &
+dsmcc-receive outputdir 100 299 99 < output.sec 
+
+sudo cp -Lr * /var/www/tvweb/
+sudo chown -hR www-data:www-data tvweb/
+
+sudo dpkg-reconfigure console-setup
+
+dvbsnoop -s pidscan -pd 1
+dvbsnoop -n 10 -nph 0x12b | grep dsmcc_section_length | sed s/dsmcc_section_length://g | sort
+
+dvbsnoop -n 1000 -nph 0x12b | grep Section_number:
+
+dvbsnoop -nph -n 100 0x12b | grep -oP "moduleId: \K\d+" | sort -u | wc -l
+
+cat results.txt | awk '{sum += $1} END {print sum}'
+
+grep -e "Module (" -e "moduleId:" -e "moduleSize" test.txt~
+grep -nr -m 2 "Module (0)" test.txt~
+grep -nr -m 2 "Module (0)" test.txt~ | grep -oP "\K\d+"
+
+grep -nr -m 2 "Module (0)" test.txt~ | grep -oP "(\d+)(\d+)"                                        
+
+# get size
+grep -oP "original_size: \K\d+" sedovanKKKKKK.txt | awk '{sum += $1} END {print sum}'
+
+// things to parse //////////////////////////////////////////////////////////////////////////////////////////////
+
+numberOfModules: 53 (0x0035)
+moduleId: 25345 (0x6301)
+moduleSize: 2153 (0x00000869)
+original_size: 13536 (0x000034e0)  [= (bytes)]
+
+carousels completed, check dii update
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+# testing timestamps
+touch -d '-1 hour' file1
+stat -c %Y file2
+[[ $file1 -nt $file2 ]] # -nt newer than
+						# -ot older than
+
+// backup sd card
+sudo dd if=/dev/mmcblk0 | pv | dd of="`date +%F`.img" bs=50M 
+
+// safety
+sudo sync
+
+// restore sd card
+sudo dd if=2014-01-09.img | pv | dd of=/dev/mmcblk0 bs=50M
+
+// filesystem sd card data transfer
+sudo rsync -avx /media/548da502-ebde-45c0-9ab2-de5e2431ee0b/ /media/to/
+
+// get time
+dvbsnoop -n 1 -nph 0x14
+
+parse:
+UTC_time: 0xdd5f105643 [= 2014-01-14 10:56:43 (UTC)]
+
+done:
+sudo date -s "`dvbsnoop -n 1 -nph 0x14 | grep "UTC_time" | awk '{print $4 " " $5}'`"
+
+// rpi current speed
+cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+ tzap statuses
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+using '/dev/dvb/adapter0/frontend0' and '/dev/dvb/adapter0/demux0'
+reading channels from file '/root/.tzap/channels.conf'
+tuning to 219500000 Hz
+video pid 0x020, audio pid 0x028a
+status 00 | signal 933f | snr 0000 | ber 00000000 | unc 00000000 | 
+status 1f | signal a70f | snr d0d0 | ber 00000000 | unc 00000000 | FE_HAS_LOCK
+status 1f | signal aadf | snr cccc | ber 00000000 | unc 00000000 | FE_HAS_LOCK
+ ...(repeated updated output) ...
+
+The first four lines in the above output show what tzap is doing; they should reflect the corresponding fields in the channels.conf file.
+Starting on the fifth line, several fields of information are presented. Each successive line afterwards simply displays the updated state or condition of each of these representative fields. The updating process will repeat continuously on its own, once every second (i.e. a new line is generated every other second), but you can terminate it at any time with Ctrl-C. In any regard, these information fields are:
+
+status: The current status of the receiver.
+
+You will notice that the value found on the fifth line is "status 00". This shows that the tuner card has been initialized, but no signal has been decoded.
+
+On successive lines, ideally the status value should be 1f (as is the case in the example output), which would indicate that correct tuning is established.
+
+The actual bitmapped field possibilities are:
+0x01 = FE_HAS_SIGNAL - found something above the noise level
+0x02 = FE_HAS_CARRIER - found a DVB signal
+0x04 = FE_HAS_VITERBI - FEC is stable
+0x08 = FE_HAS_SYNC - found sync bytes
+0x10 = FE_HAS_LOCK - everything's working...
+0x20 = FE_TIMEDOUT - no lock within the last ~2 seconds
+0x40 = FE_REINIT - frontend was reinitialized
+signal: Signal strength. The values shown here can vary from card to card, so if yours appears abnormally high or low, it probably means you're using a different card. In general, though, higher values mean better signal.
+
+snr: The signal to noise ratio. This is more important than the signal strength. Many cards really only supply 8 bits of data (2 digits); the other two may be 00 or repeat the first two, as in this example.
+
+ber: The bit error rate. This should be as low as possible, preferably 0.
+
+unc: Uncorrected block errors. This should be 0 for a good signal; if it isn't, you'll have defects in the output stream.
+FE_HAS_LOCK: This indicates that the tuner has tuned ("locked") into the stream.
+
+Not all the numbers are implemented in some drivers, but good is signal > 8000, status 1f (all bits set), snr (Signal to Noise Ratio) should be > 8000, ber (bit error rate) - low is good, unc (Uncorrectable blocks) - low is good.
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+ 
+// copy whole directory over scp
+sshpass -p 'pi' scp -pvCr lsd pi@192.168.1.186:/home/pi/
+sshpass -p 'pi' rsync -ru * pi@192.168.1.186:/home/pi/lsd/
+sshpass -p 'pi' rsync -avz * pi@192.168.1.186:/home/pi/lsd/
+
+// suspend
+sudo pm-suspend; gnome-screensaver-command -l
