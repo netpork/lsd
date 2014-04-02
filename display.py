@@ -15,7 +15,7 @@ class Display:
 
     def __init__(self):
         self.lcd.clear()
-        self.lcd.backlight(self.lcd.ON)
+        self.lcd.backlight(self.lcd.YELLOW)
         self.info = Info()
 
     def show(self):
@@ -31,6 +31,8 @@ class Display:
         self.lcd.message(s) 
 
     def update(self):
+        if self.systemHalt: return
+
         lock = self.info.isLocked()
 
         # appropriately set backlight
@@ -41,7 +43,8 @@ class Display:
             self.setBackgroundRed()
             self.info.noData()
 
-        if not self.systemHalt: self.show()
+        self.show()
+        # if not self.systemHalt: self.show()
 
     def moveUp(self):
         if self.screenIdx == 0:
@@ -78,20 +81,22 @@ class Display:
     def action3(self):
         """ reboot """
         self.systemHalt = True
-        subprocess.call("sync")
-        subprocess.call("reboot")
+        self.setBackgroundOff()
         self.lcd.clear()
         self.lcd.message('Rebooting ...')
-        exit(0)
+        subprocess.call("sync")
+        subprocess.call("reboot")
+        # exit(0)
 
     def action4(self):
         """ shutdown """
         self.systemHalt = True
+        self.setBackgroundOff()
+        self.lcd.clear()
+        self.lcd.message("Wait till screen\nis off + 10secs!")
         subprocess.call("sync")
         subprocess.call(["shutdown", "-h", "now"])
-        self.lcd.clear()
-        self.lcd.message("Wait untill\nscreen is off!")
-        exit(0)
+        # exit(0)
 
     def action5(self):
         self.exit()
@@ -102,6 +107,9 @@ class Display:
 
     def setBackgroundGreen(self):
         self.lcd.backlight(self.lcd.GREEN)
+
+    def setBackgroundOff(self):
+        self.lcd.backlight(self.lcd.TEAL)
 
     def setBackgroundRed(self):
         self.lcd.backlight(self.lcd.RED)

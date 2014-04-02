@@ -9,7 +9,7 @@ display = Display()
 lcd = display.lcd
 prevButton = -1
 lastTime = time.time()
-REFRESH_TIME = 3.0
+REFRESH_TIME = 2.0
 
 # show first page
 display.show()
@@ -25,7 +25,7 @@ while True:
             display.show()
         elif lcd.buttonPressed(lcd.SELECT):
             display.action()
-
+ 
         prevButton = button
         lastTime = time.time()
     else:

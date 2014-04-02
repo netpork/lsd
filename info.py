@@ -1,13 +1,13 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
 import math
 from subprocess import *
 
 class Info:
-
-    screen0 = ['shmorni!', 'mmm...']
+    screen0 = ['    Shmorni     ', '     v0.42      ']
     screen1 = ['---', '---']
     screen2 = ['---', '---']
-    screen3 = ['>Restart', '']
+    screen3 = ['>Reboot', '']
     screen4 = ['>Shutdown', '']
     screen5 = ['>Exit', 'Console only!']
 
